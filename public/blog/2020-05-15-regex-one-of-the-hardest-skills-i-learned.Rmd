@@ -1,0 +1,90 @@
+---
+title: Regex - One of the Hardest Skills I Learned
+author: ''
+date: '2020-05-10'
+slug: regex-one-of-the-hardest-skills-i-learned
+categories: []
+tags: []
+description: ''
+---
+![](/blog/2020-05-15-regex-one-of-the-hardest-skills-i-learned_files/ididit.png)
+
+Regular expressions (regex or regexp) extract information from text by searching for matches of a specific pattern (i.e. a sequence of ASCII or unicode characters).
+
+Useful for parsing/replacing strings, reformatting/cleaning/stripping data, webscraping, etc.
+
+Once you’ve learned the syntax, you can use regex in (almost) all programming languages: JavaScript, Java, VB, C #, C / C++, Python, Perl, Ruby, R, and many others!
+
+***
+
+*Problem 1: Using re.findall(), match all IP addressses in this string (string2). Your results should look like this:*
+
+['213.92.153.167',
+ '69.43.107.219',
+ '69.43.112.233',
+ '217.70.100.113',
+ '74.125.186.208',
+ '74.125.186.208',
+ '140.105.63.158',
+ '172.45.240.237',
+ '217.70.177.60',
+ '216.34.90.16',
+ '69.43.85.253',
+ '213.121.184.130',
+ '213.121.184.130',
+ '140.105.63.164']
+ 
+```{python}
+import re
+
+string1="Jan 13 00:48:59: DROP service 68->67(udp) from 213.92.153.167 to 69.43.107.219, prefix: \"spoof iana-0/8\" \
+(in: eth0 69.43.112.233(38:f8:b7:90:45:92):68 -> 217.70.100.113(00:21:87:79:9c:d9):67 UDP len:576 ttl:64) \
+Jan 13 12:02:48: ACCEPT service dns from 74.125.186.208 to firewall(pub-nic-dns), prefix: \"none\" \
+(in: eth0 74.125.186.208(00:1a:e3:52:5d:8e):36008 -> 140.105.63.158(00:1a:9a:86:2e:62):53 UDP len:82 ttl:38) \
+Jan 13 17:44:52: DROP service 68->67(udp) from 172.45.240.237 to 217.70.177.60, prefix: \"spoof iana-0/8\" \
+(in: eth0 216.34.90.16(00:21:91:fe:a2:6f):68 -> 69.43.85.253(00:07:e1:7c:53:db):67 UDP len:328 ttl:64) \
+Jan 13 17:52:08: ACCEPT service http from 213.121.184.130 to firewall(pub-nic), prefix: \"none\" \
+(in: eth0 213.121.184.130(00:05:2e:6a:a4:14):8504 -> 140.105.63.164(00:60:11:92:ed:1b):80 TCP flags: ****S* len:52 ttl:109)"
+
+x=re.findall('[0-9]+(?:\.[0-9]+){3}', string1)
+print(x)
+```
+ 
+ 
+*Problem 2: In the following string (string2), using re.findall(), match restriction enzyme binding sites ANTAAT and GCRWTG.Note that per the IUPAC nucleotide code, N is any base, R is A or G, W is A or T*
+
+*How many cuts total in the sequence do you expect if you digest with both of these restriction enzymes? How many fragments do you expect?*
+```{python}
+string2="ATGGCAATAACCCCCCGTTTCTACTTCTAGAGGAGAAAAGTATTGACATGAGCGCTCCCGGCACAAGGGCCAAAGAAGTCTCCAATTTCTTATTTCCGAATGACATGCGTCTCCTTGCGGGTAAATCACCGACCGCAATTCATAGAAGCCTGGGGGAACAGATAGGTCTAATTAGCTTAAGAGAGTAAATCCTGGGATCATTCAGTAGTAACCATAAACTTACGCTGGGGCTTCTTCGGCGGATTTTTACAGTTACCAACCAGGAGATTTGAAGTAAATCAGTTGAGGATTTAGCCGCGCTATCCGGTAATCTCCAAATTAAAACATACCGTTCCATGAAGGCTAGAATTACTTACCGGCCTTTTCCATGCCTGCGCTATACCCCCCCACTCTCCCGCTTATCCGTCCGAGCGGAGGCAGTGCGATCCTCCGTTAAGATATTCTTACGTGTGACGTAGCTATGTATTTTGCAGAGCTGGCGAACGCGTTGAACACTTCACAGATGGTAGGGATTCGGGTAAAGGGCGTATAATTGGGGACTAACATAGGCGTAGACTACGATGGCGCCAACTCAATCGCAGCTCGAGCGCCCTGAATAACGTACTCATCTCAACTCATTCTCGGCAATCTACCGAGCGACTCGATTATCAACGGCTGTCTAGCAGTTCTAATCTTTTGCCAGCATCGTAATAGCCTCCAAGAGATTGATGATAGCTATCGGCACAGAACTGAGACGGCGCCGATGGATAGCGGACTTTCGGTCAACCACAATTCCCCACGGGACAGGTCCTGCGGTGCGCATCACTCTGAATGTACAAGCAACCCAAGTGGGCCGAGCCTGGACTCAGCTGGTTCCTGCGTGAGCTCGAGACTCGGGATGACAGCTCTTTAAACATAGAGCGGGGGCGTCGAACGGTCGAGAAAGTCATAGTACCTCGGGTACCAACTTACTCAGGTTATTGCTTGAAGCTGTACTATTTTAGGGGGGGAGCGCTGAAGGTCTCTTCTTCTCATGACTGAACTCGCGAGGGTCGTGAAGTCGGTTCCTTCAATGGTTAAAAAACAAAGGCTTACTGTGCGCAGAGGAACGCCCATCTAGCGGCTGGCGTCTTGAATGCTCGGTCCCCTTTGTCATTCCGGATTAATCCATTTCCCTCATTCACGAGCTTGCGAAGTCTACATTGGTATATGAATGCGACCTAGAAGAGGGCGCTTAAAATTGGCAGTGGTTGATGCTCTAAACTCCATTTGGTTTACTCGTGCATCACCGCGATAGGCTGACAAAGGTTTAACATTGAATAGCAAGGCACTTCCGGTCTCAATGAACGGCCGGGAAAGGTACGCGCGCGGTATGGGAGGATCAAGGGGCCAATAGAGAGGCTCCTCTCTCACTCGCTAGGAGGCAAATGTAAAACAATGGTTACTGCATCGATACATAAAACATGTCCATCGGTTGCCCAAAGTGTTAAGTGTCTATCACCCCTAGGGCCGTTTCCCGCATATAAACGCCAGGTTGTATCCGCATTTGATGCTACCGTGGATGAGTCTGCGTCGAGCGCGCCGCACGAATGTTGCAATGTATTGCATGAGTAGGGTTGACTAAGAGCCGTTAGATGCGTCGCTGTACTAATAGTTGTCGACAGACCGTCGAGATTAGAAAATGGTACCAGCATTTTCGGAGGTTCTCTAACTAGTATGGATTGCGGTGTCTTCACTGTGCTGCGGCTACCCATCGCCTGAAATCCAGCTGGTGTCAAGCCATCCCCTCTCCGGGACGCCGCATGTAGTGAAACATATACGTTGCACGGGTTCACCGCGGTCCGTTCTGAGTCGACCAAGGACACAATCGAGCTCCGATCCGTACCCTCGACAAACTTGTACCCGACCCCCGGAGCTTGCCAGCTCCTCGGGTATCATGGAGCCTGTGGTTCATCGCGTCCGATATCAAACTTCGTCATGATAAAGTCCCCCCCTCGGGAGTACCAGAGAAGATGACTACTGAGTTGTGCGAT"
+
+x=re.findall(r"GC[AG][AT]TG", string2)
+
+x=re.findall(r"A[ATGC]TAAT|GC[AG][AT]TG", string2)
+print(x)
+``` 
+###### I expect 4 cuts if I digest with both restriction enzymes to make 5 fragments.
+
+*Problem 3: Take the following paragraph (string3) and remove punctuation marks [.—,;'] with re.sub(). That is, replace them with "".*
+
+*Split resulting string into a list of words with re.split() (split at any whitespace character)*
+
+*Loop through the resulting list and make every word lower-case with .lower(). You can do this in several ways: create an empty list outside of your loop and then use .append() inside, for example.*
+
+*Apply the count_chars() function from class to the resulting lower-case list: notice that it counts the words for you!*
+```{python}
+string3="Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off — then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me."
+
+x = re.sub(r"[.—,;']", "", string3)
+x = re.split(r' ', x)
+
+def count_chars(sentence):
+    counts = {}
+    for c in sentence:
+        if c in counts:
+            counts[c]+=1
+        else:
+            counts[c]=1
+    for c in counts:
+        print(c, "appears", counts[c], "times")
+count_chars(x)
+```

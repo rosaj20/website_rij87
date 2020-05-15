@@ -7,6 +7,10 @@ tags:
 - projects
 title: Projects
 ---
-## Projects
-- [Link to Project 1](/project1/)
-- [Link to Project 2](/project2/)
+## BDP Connecting Experience Poster
+- [Bridging Disciplines Poster: Daily Activity Lab](./Website/content/BDP_Poster_RJuan.pdf/)
+
+
+## SDS 348 Projects
+- [Project 1: Exploratory Data Analysis](/project1/)
+- [Project 2: Modeling, Testing, and Predicting](/project2/)

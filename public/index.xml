@@ -12,9 +12,21 @@
     
     
     <item>
+      <title>Regex - One of the Hardest Skills I Learned</title>
+      <link>/blog/regex-one-of-the-hardest-skills-i-learned/</link>
+      <pubDate>Sun, 10 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/regex-one-of-the-hardest-skills-i-learned/</guid>
+      <description>Regular expressions (regex or regexp) extract information from text by searching for matches of a specific pattern (i.e. a sequence of ASCII or unicode characters).
+Useful for parsing/replacing strings, reformatting/cleaning/stripping data, webscraping, etc.
+Once you’ve learned the syntax, you can use regex in (almost) all programming languages: JavaScript, Java, VB, C #, C / C++, Python, Perl, Ruby, R, and many others!
+Problem 1: Using re.findall(), match all IP addressses in this string (string2).</description>
+    </item>
+    
+    <item>
       <title>My First Blog</title>
       <link>/blog/my-new-post/</link>
-      <pubDate>Fri, 15 May 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 03 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/blog/my-new-post/</guid>
       <description> #python code chunk fruit_prices = { &amp;#39;apple&amp;#39;: 0.65, &amp;#39;mango&amp;#39;: 1.50, &amp;#39;strawberry&amp;#39;: &amp;#39;$3/lb&amp;#39;, &amp;#39;musk melon&amp;#39;: &amp;#39;unavailable&amp;#39; } fruit_prices[&amp;#39;mango&amp;#39;] ## 1.5 #R code chunk library(reticulate) py$fruit_prices ## $apple ## [1] 0.65 ## ## $mango ## [1] 1.5 ## ## $strawberry ## [1] &amp;quot;$3/lb&amp;quot; ## ## $`musk melon` ## [1] &amp;quot;unavailable&amp;quot; x &amp;lt;- &amp;quot;dog&amp;quot; #another python code chunk r.x.capitalize().swapcase()*100 ## &amp;#39;dOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOG&amp;#39; </description>
@@ -44,7 +56,7 @@
       <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
       
       <guid>/projects/</guid>
-      <description>Projects  Link to Project 1 Link to Project 2  </description>
+      <description>BDP Connecting Experience Poster  Bridging Disciplines Poster: Daily Activity Lab  SDS 348 Projects  Project 1: Exploratory Data Analysis Project 2: Modeling, Testing, and Predicting  </description>
     </item>
     
   </channel>

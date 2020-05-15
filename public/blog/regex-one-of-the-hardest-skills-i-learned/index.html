@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Rosa Juan" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Regex - One of the Hardest Skills I Learned</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume_rij87.pdf">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/blog/regex-one-of-the-hardest-skills-i-learned/">Regex - One of the Hardest Skills I Learned</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          May 10, 2020
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<p><img src="/blog/2020-05-15-regex-one-of-the-hardest-skills-i-learned_files/ididit.png" /></p>
+<p>Regular expressions (regex or regexp) extract information from text by searching for matches of a specific pattern (i.e. a sequence of ASCII or unicode characters).</p>
+<p>Useful for parsing/replacing strings, reformatting/cleaning/stripping data, webscraping, etc.</p>
+<p>Once you’ve learned the syntax, you can use regex in (almost) all programming languages: JavaScript, Java, VB, C #, C / C++, Python, Perl, Ruby, R, and many others!</p>
+<hr />
+<p><em>Problem 1: Using re.findall(), match all IP addressses in this string (string2). Your results should look like this:</em></p>
+<p>[‘213.92.153.167’,
+‘69.43.107.219’,
+‘69.43.112.233’,
+‘217.70.100.113’,
+‘74.125.186.208’,
+‘74.125.186.208’,
+‘140.105.63.158’,
+‘172.45.240.237’,
+‘217.70.177.60’,
+‘216.34.90.16’,
+‘69.43.85.253’,
+‘213.121.184.130’,
+‘213.121.184.130’,
+‘140.105.63.164’]</p>
+<pre class="python"><code>import re
+
+string1=&quot;Jan 13 00:48:59: DROP service 68-&gt;67(udp) from 213.92.153.167 to 69.43.107.219, prefix: \&quot;spoof iana-0/8\&quot; \
+(in: eth0 69.43.112.233(38:f8:b7:90:45:92):68 -&gt; 217.70.100.113(00:21:87:79:9c:d9):67 UDP len:576 ttl:64) \
+Jan 13 12:02:48: ACCEPT service dns from 74.125.186.208 to firewall(pub-nic-dns), prefix: \&quot;none\&quot; \
+(in: eth0 74.125.186.208(00:1a:e3:52:5d:8e):36008 -&gt; 140.105.63.158(00:1a:9a:86:2e:62):53 UDP len:82 ttl:38) \
+Jan 13 17:44:52: DROP service 68-&gt;67(udp) from 172.45.240.237 to 217.70.177.60, prefix: \&quot;spoof iana-0/8\&quot; \
+(in: eth0 216.34.90.16(00:21:91:fe:a2:6f):68 -&gt; 69.43.85.253(00:07:e1:7c:53:db):67 UDP len:328 ttl:64) \
+Jan 13 17:52:08: ACCEPT service http from 213.121.184.130 to firewall(pub-nic), prefix: \&quot;none\&quot; \
+(in: eth0 213.121.184.130(00:05:2e:6a:a4:14):8504 -&gt; 140.105.63.164(00:60:11:92:ed:1b):80 TCP flags: ****S* len:52 ttl:109)&quot;
+
+x=re.findall(&#39;[0-9]+(?:\.[0-9]+){3}&#39;, string1)
+print(x)</code></pre>
+<pre><code>## [&#39;213.92.153.167&#39;, &#39;69.43.107.219&#39;, &#39;69.43.112.233&#39;, &#39;217.70.100.113&#39;, &#39;74.125.186.208&#39;, &#39;74.125.186.208&#39;, &#39;140.105.63.158&#39;, &#39;172.45.240.237&#39;, &#39;217.70.177.60&#39;, &#39;216.34.90.16&#39;, &#39;69.43.85.253&#39;, &#39;213.121.184.130&#39;, &#39;213.121.184.130&#39;, &#39;140.105.63.164&#39;]</code></pre>
+<p><em>Problem 2: In the following string (string2), using re.findall(), match restriction enzyme binding sites ANTAAT and GCRWTG.Note that per the IUPAC nucleotide code, N is any base, R is A or G, W is A or T</em></p>
+<p><em>How many cuts total in the sequence do you expect if you digest with both of these restriction enzymes? How many fragments do you expect?</em></p>
+<pre class="python"><code>string2=&quot;ATGGCAATAACCCCCCGTTTCTACTTCTAGAGGAGAAAAGTATTGACATGAGCGCTCCCGGCACAAGGGCCAAAGAAGTCTCCAATTTCTTATTTCCGAATGACATGCGTCTCCTTGCGGGTAAATCACCGACCGCAATTCATAGAAGCCTGGGGGAACAGATAGGTCTAATTAGCTTAAGAGAGTAAATCCTGGGATCATTCAGTAGTAACCATAAACTTACGCTGGGGCTTCTTCGGCGGATTTTTACAGTTACCAACCAGGAGATTTGAAGTAAATCAGTTGAGGATTTAGCCGCGCTATCCGGTAATCTCCAAATTAAAACATACCGTTCCATGAAGGCTAGAATTACTTACCGGCCTTTTCCATGCCTGCGCTATACCCCCCCACTCTCCCGCTTATCCGTCCGAGCGGAGGCAGTGCGATCCTCCGTTAAGATATTCTTACGTGTGACGTAGCTATGTATTTTGCAGAGCTGGCGAACGCGTTGAACACTTCACAGATGGTAGGGATTCGGGTAAAGGGCGTATAATTGGGGACTAACATAGGCGTAGACTACGATGGCGCCAACTCAATCGCAGCTCGAGCGCCCTGAATAACGTACTCATCTCAACTCATTCTCGGCAATCTACCGAGCGACTCGATTATCAACGGCTGTCTAGCAGTTCTAATCTTTTGCCAGCATCGTAATAGCCTCCAAGAGATTGATGATAGCTATCGGCACAGAACTGAGACGGCGCCGATGGATAGCGGACTTTCGGTCAACCACAATTCCCCACGGGACAGGTCCTGCGGTGCGCATCACTCTGAATGTACAAGCAACCCAAGTGGGCCGAGCCTGGACTCAGCTGGTTCCTGCGTGAGCTCGAGACTCGGGATGACAGCTCTTTAAACATAGAGCGGGGGCGTCGAACGGTCGAGAAAGTCATAGTACCTCGGGTACCAACTTACTCAGGTTATTGCTTGAAGCTGTACTATTTTAGGGGGGGAGCGCTGAAGGTCTCTTCTTCTCATGACTGAACTCGCGAGGGTCGTGAAGTCGGTTCCTTCAATGGTTAAAAAACAAAGGCTTACTGTGCGCAGAGGAACGCCCATCTAGCGGCTGGCGTCTTGAATGCTCGGTCCCCTTTGTCATTCCGGATTAATCCATTTCCCTCATTCACGAGCTTGCGAAGTCTACATTGGTATATGAATGCGACCTAGAAGAGGGCGCTTAAAATTGGCAGTGGTTGATGCTCTAAACTCCATTTGGTTTACTCGTGCATCACCGCGATAGGCTGACAAAGGTTTAACATTGAATAGCAAGGCACTTCCGGTCTCAATGAACGGCCGGGAAAGGTACGCGCGCGGTATGGGAGGATCAAGGGGCCAATAGAGAGGCTCCTCTCTCACTCGCTAGGAGGCAAATGTAAAACAATGGTTACTGCATCGATACATAAAACATGTCCATCGGTTGCCCAAAGTGTTAAGTGTCTATCACCCCTAGGGCCGTTTCCCGCATATAAACGCCAGGTTGTATCCGCATTTGATGCTACCGTGGATGAGTCTGCGTCGAGCGCGCCGCACGAATGTTGCAATGTATTGCATGAGTAGGGTTGACTAAGAGCCGTTAGATGCGTCGCTGTACTAATAGTTGTCGACAGACCGTCGAGATTAGAAAATGGTACCAGCATTTTCGGAGGTTCTCTAACTAGTATGGATTGCGGTGTCTTCACTGTGCTGCGGCTACCCATCGCCTGAAATCCAGCTGGTGTCAAGCCATCCCCTCTCCGGGACGCCGCATGTAGTGAAACATATACGTTGCACGGGTTCACCGCGGTCCGTTCTGAGTCGACCAAGGACACAATCGAGCTCCGATCCGTACCCTCGACAAACTTGTACCCGACCCCCGGAGCTTGCCAGCTCCTCGGGTATCATGGAGCCTGTGGTTCATCGCGTCCGATATCAAACTTCGTCATGATAAAGTCCCCCCCTCGGGAGTACCAGAGAAGATGACTACTGAGTTGTGCGAT&quot;
+
+x=re.findall(r&quot;GC[AG][AT]TG&quot;, string2)
+
+x=re.findall(r&quot;A[ATGC]TAAT|GC[AG][AT]TG&quot;, string2)
+print(x)</code></pre>
+<pre><code>## [&#39;GCGTTG&#39;, &#39;ATTAAT&#39;, &#39;GCAATG&#39;, &#39;ACTAAT&#39;]</code></pre>
+<div id="i-expect-4-cuts-if-i-digest-with-both-restriction-enzymes-to-make-5-fragments." class="section level6">
+<h6>I expect 4 cuts if I digest with both restriction enzymes to make 5 fragments.</h6>
+<p><em>Problem 3: Take the following paragraph (string3) and remove punctuation marks [.—,;’] with re.sub(). That is, replace them with &quot;&quot;.</em></p>
+<p><em>Split resulting string into a list of words with re.split() (split at any whitespace character)</em></p>
+<p><em>Loop through the resulting list and make every word lower-case with .lower(). You can do this in several ways: create an empty list outside of your loop and then use .append() inside, for example.</em></p>
+<p><em>Apply the count_chars() function from class to the resulting lower-case list: notice that it counts the words for you!</em></p>
+<pre class="python"><code>string3=&quot;Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off — then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me.&quot;
+
+x = re.sub(r&quot;[.—,;&#39;]&quot;, &quot;&quot;, string3)
+x = re.split(r&#39; &#39;, x)
+
+def count_chars(sentence):
+    counts = {}
+    for c in sentence:
+        if c in counts:
+            counts[c]+=1
+        else:
+            counts[c]=1
+    for c in counts:
+        print(c, &quot;appears&quot;, counts[c], &quot;times&quot;)
+count_chars(x)</code></pre>
+<pre><code>## Call appears 1 times
+## me appears 5 times
+## Ishmael appears 1 times
+## Some appears 1 times
+## years appears 1 times
+## ago appears 1 times
+##  appears 3 times
+## never appears 1 times
+## mind appears 1 times
+## how appears 1 times
+## long appears 1 times
+## precisely appears 1 times
+## having appears 1 times
+## little appears 2 times
+## or appears 2 times
+## no appears 1 times
+## money appears 1 times
+## in appears 4 times
+## my appears 4 times
+## purse appears 1 times
+## and appears 7 times
+## nothing appears 2 times
+## particular appears 1 times
+## to appears 5 times
+## interest appears 1 times
+## on appears 1 times
+## shore appears 1 times
+## I appears 9 times
+## thought appears 1 times
+## would appears 1 times
+## sail appears 1 times
+## about appears 2 times
+## a appears 5 times
+## see appears 1 times
+## the appears 10 times
+## watery appears 1 times
+## part appears 1 times
+## of appears 4 times
+## world appears 1 times
+## It appears 1 times
+## is appears 4 times
+## way appears 1 times
+## have appears 1 times
+## driving appears 1 times
+## off appears 2 times
+## spleen appears 1 times
+## regulating appears 1 times
+## circulation appears 1 times
+## Whenever appears 1 times
+## find appears 2 times
+## myself appears 2 times
+## growing appears 1 times
+## grim appears 1 times
+## mouth appears 1 times
+## whenever appears 3 times
+## it appears 4 times
+## damp appears 1 times
+## drizzly appears 1 times
+## November appears 1 times
+## soul appears 1 times
+## involuntarily appears 1 times
+## pausing appears 1 times
+## before appears 1 times
+## coffin appears 1 times
+## warehouses appears 1 times
+## bringing appears 1 times
+## up appears 1 times
+## rear appears 1 times
+## every appears 1 times
+## funeral appears 1 times
+## meet appears 1 times
+## especially appears 1 times
+## hypos appears 1 times
+## get appears 2 times
+## such appears 1 times
+## an appears 1 times
+## upper appears 1 times
+## hand appears 1 times
+## that appears 1 times
+## requires appears 1 times
+## strong appears 1 times
+## moral appears 1 times
+## principle appears 1 times
+## prevent appears 1 times
+## from appears 1 times
+## deliberately appears 1 times
+## stepping appears 1 times
+## into appears 1 times
+## street appears 1 times
+## methodically appears 1 times
+## knocking appears 1 times
+## people’s appears 1 times
+## hats appears 1 times
+## then appears 1 times
+## account appears 1 times
+## high appears 1 times
+## time appears 2 times
+## sea appears 1 times
+## as appears 2 times
+## soon appears 1 times
+## can appears 1 times
+## This appears 1 times
+## substitute appears 1 times
+## for appears 1 times
+## pistol appears 1 times
+## ball appears 1 times
+## With appears 1 times
+## philosophical appears 1 times
+## flourish appears 1 times
+## Cato appears 1 times
+## throws appears 1 times
+## himself appears 1 times
+## upon appears 1 times
+## his appears 1 times
+## sword appears 1 times
+## quietly appears 1 times
+## take appears 1 times
+## ship appears 1 times
+## There appears 1 times
+## surprising appears 1 times
+## this appears 1 times
+## If appears 1 times
+## they appears 1 times
+## but appears 1 times
+## knew appears 1 times
+## almost appears 1 times
+## all appears 1 times
+## men appears 1 times
+## their appears 1 times
+## degree appears 1 times
+## some appears 1 times
+## other appears 1 times
+## cherish appears 1 times
+## very appears 1 times
+## nearly appears 1 times
+## same appears 1 times
+## feelings appears 1 times
+## towards appears 1 times
+## ocean appears 1 times
+## with appears 1 times</code></pre>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

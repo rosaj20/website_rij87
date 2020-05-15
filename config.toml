@@ -20,10 +20,9 @@ theme = "hugo-sustain"
   custom_js  = []
 
 [params.social]
-  Github        = "username"
-  Email         = "email@example.com"
-  Twitter       = "username"
-  LinkedIn      = "username"
+  Github        = "rosaj20"
+  Email         = "rosa.juan@utexas.edu"
+  LinkedIn      = "rosa-juan-2457a7185"
 
 ## Main Menu
 [[menu.main]]
