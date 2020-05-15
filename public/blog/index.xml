@@ -6,10 +6,19 @@
     <description>Recent content in Blogs on SDS 348 Porfolio Website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Sun, 10 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 15 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Thank You Dr. Woodward!</title>
+      <link>/blog/thank-you-dr-woodward/</link>
+      <pubDate>Fri, 15 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/thank-you-dr-woodward/</guid>
+      <description>I was terrified when computational statistics was the only class that fulfilled one of the last biology courses I needed to take to graduate. I was hoping to not have such a stressful semester, and with SDS 348, that seemed nearly impossible. However, the impossible turned out to be very possible. I enjoyed this class more than I thought I would. It proved to be a fun and useful tool for data interpretation.</description>
+    </item>
     
     <item>
       <title>Regex - One of the Hardest Skills I Learned</title>
@@ -29,7 +38,8 @@ Problem 1: Using re.findall(), match all IP addressses in this string (string2).
       <pubDate>Sun, 03 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/blog/my-new-post/</guid>
-      <description> #python code chunk fruit_prices = { &amp;#39;apple&amp;#39;: 0.65, &amp;#39;mango&amp;#39;: 1.50, &amp;#39;strawberry&amp;#39;: &amp;#39;$3/lb&amp;#39;, &amp;#39;musk melon&amp;#39;: &amp;#39;unavailable&amp;#39; } fruit_prices[&amp;#39;mango&amp;#39;] ## 1.5 #R code chunk library(reticulate) py$fruit_prices ## $apple ## [1] 0.65 ## ## $mango ## [1] 1.5 ## ## $strawberry ## [1] &amp;quot;$3/lb&amp;quot; ## ## $`musk melon` ## [1] &amp;quot;unavailable&amp;quot; x &amp;lt;- &amp;quot;dog&amp;quot; #another python code chunk r.x.capitalize().swapcase()*100 ## &amp;#39;dOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOG&amp;#39; </description>
+      <description>Python and R can communicate with each other making it possible to share information between these two open-source programming languages.
+#python code chunk fruit_prices = { &amp;#39;apple&amp;#39;: 0.65, &amp;#39;mango&amp;#39;: 1.50, &amp;#39;strawberry&amp;#39;: &amp;#39;$3/lb&amp;#39;, &amp;#39;musk melon&amp;#39;: &amp;#39;unavailable&amp;#39; } fruit_prices[&amp;#39;mango&amp;#39;] ## 1.5 #R code chunk library(reticulate) py$fruit_prices ## $apple ## [1] 0.65 ## ## $mango ## [1] 1.5 ## ## $strawberry ## [1] &amp;quot;$3/lb&amp;quot; ## ## $`musk melon` ## [1] &amp;quot;unavailable&amp;quot; x &amp;lt;- &amp;quot;dog&amp;quot; #another python code chunk r.</description>
     </item>
     
   </channel>

@@ -1,12 +1,14 @@
 ---
-categories:
-- projects
-date: "2016-10-02T22:55:05-04:00"
-showpagemeta: false
-tags:
-- projects
-title: Projects
+title: "project"
+author: "Rosa Juan (rij87)"
+date: "5/15/2020"
+output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 ## SDS 348 Projects
 - [Project 1: Exploratory Data Analysis](/project1/)
 - [Project 2: Modeling, Testing, and Predicting](/project2/)
@@ -14,7 +16,7 @@ title: Projects
 
 ## BDP Poster
 
-<iframe src="/Resume_rij87.pdf"></iframe>
+<iframe src="/BDPposter.pdf"></iframe>
 
 <img src="/BDPposter.pdf">
 
@@ -22,4 +24,3 @@ title: Projects
 
 ## BDP Connecting Experience Poster
 - [Bridging Disciplines Poster: Daily Activity Lab](/BDPposter.pdf)
-
