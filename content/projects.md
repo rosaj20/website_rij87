@@ -15,5 +15,6 @@ title: Projects
 ## BDP Connecting Experience Poster
 - [Bridging Disciplines Program Poster: Daily Activity Lab](/BDPposter.pdf)
 - [Preliminary Results: Daily Activity Lab](/preliminary_plots_BDP.pdf)
-  > ###### *Read more about these preliminary results in the BDP Poster.*
+  
+  *Read more about these preliminary results in the BDP Poster.*
 
