@@ -1,0 +1,119 @@
+---
+title: "Project 1"
+author: "Rosa Juan (rij87)"
+date: "3/15/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F, tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+---
+ 
+##### Introduction
+```{R}
+library(tidyverse)
+library(dbplyr)
+library(ggplot2)
+getwd()
+use <- read.csv(file = "MotionUsage_P12-18.csv")
+acc <- read.csv(file = "MotionAcceleration_P12-18.csv")
+glimpse(use)
+glimpse(acc)
+```
+*The two datasets chosen are from the Daily Activity Lab (DAL) research project at UT Austin. The purpose of the lab is to study daily interactions between moms and their infants. The study is trying to determine how infants' soioemotional development is impacted through various objective data measures such as movement and heartbeat. These datasets were obtained from 6 participants who used a Movisense sensor at home over the span of a week. One dataset recorded the use of the monitor meaning on which day and on what hour the sensor was used as well as how many hours of that data were usable (Day, Hour.Count, Hr.1.min, Absolute.Time, Minute.Count, hrvlsValid.Sum). Relative to a baseline assesment, the other dataset calculated the baby's activeness percentage, including the time when the participant did not put the sensor on the baby (Wake.Percentage, Sleep.Percentage, Not.Worn.Percentage). Also, the acceleration sum and variance of the baby's motion was determined relative to the baseline (Acceleration.Sum, Acceleration Variance). This data is interesting because it is just one parameter that the DAL research center is trying to incorporate into a fitbit program or other related device that will tell mom, relatively to other babies, how their baby is developing.*
+
+---
+
+##### Tidying: Rearranging Wide/Long
+```{R}
+accNew <- unique(acc, by = "Participant") %>% pivot_wider(names_from = "Participant", values_from ="Absolute.Time") %>% glimpse
+
+accNew %>% pivot_longer(c("P12", "P13", "P14", "P15", "P16", "P17", "P18"), names_to = "Participant", values_to = "Absolute.Time") %>% na.omit %>% glimpse
+```
+*Both of the datasets were already tidy and rearranging them in any other way did not make sense. Additionally, both of these datasets were hard to rearrange as the data included a lot of duplicates which makes sense since the majority of infants will fall within the same ranges of motion and participants recorded around the same dates. The 'acc' data was rearranged to be in a wider format so that each participant was a column with its Absolute.Times in the rows. Even after selecting only the unique values, there was still alot of NAs, both when pivoting wider and returning it to its original format by using pivot_longer.*
+
+##### Joining/Merging
+```{R}
+alldata <- left_join(use, acc, by="Participant")
+```
+*The function left-join was used to combine 'acc' and 'use' datasets to combine one table to columns from another, matching values with the corresponded rows in this case the rows being under the column of 'Participant'. This join was chosen because it joined all matching values of the second dataset to the first dataset in which both dataset had the exact same 'Participant' column. Any other merge would have been confusing and uncertain as whether the data had combined correctly since there was a lot of duplicate data. Again, this duplicate data is because it is expected that the infants would give around the same type of data.*
+
+##### Wrangling
+```{R}
+alldata %>% summarize_all(n_distinct)
+alldata %>% summarize_if(is.numeric, mean, na.rm = T)
+alldata %>% summarize_if(is.numeric, sd, na.rm = T)
+
+alldata%>% summarize_if(is.numeric, list(min=min,max=max), na.rm=T)
+
+alldata %>% select(Wake.Percentage, Sleep.Percentage) %>% cor
+alldata %>% select(Wake.Percentage, Not.Worn.Percentage) %>% cor
+alldata %>% select(Sleep.Percentage, Not.Worn.Percentage) %>% cor
+
+alldata %>% group_by(Day) %>% summarize(var(Acceleration.Sum, na.rm = T))
+
+alldata %>% group_by(Hour.Count) %>% summarize(`25%`=quantile(Acceleration.Sum, probs=0.25), `50%`=quantile(Acceleration.Sum, probs=0.5), `75%`=quantile(Acceleration.Sum, probs=0.75), n=n())
+
+alldata %>% group_by(Participant = Participant) %>% select(-c("Hr.1.min.", "Absolute.Time", "Minute.Count")) %>% summarize_if(is.numeric,mean,na.rm=T)
+
+alldata %>% group_by(Participant=Participant) %>% summarize(sd(Acceleration.Sum, na.rm=T), n(), n_distinct(Day))
+
+alldata %>% group_by(Day) %>% select(-c("Hr.1.min.", "Absolute.Time", "Minute.Count")) %>% summarize_if(is.numeric,mean,na.rm=T)
+
+alldata %>% group_by(Hour.Count) %>% summarize(sd(Acceleration.Sum, na.rm=T))
+
+alldata %>% filter(Participant=="P12") %>% arrange(Hour.Count) %>% mutate(HrsValid.Percentage=hrvIsValid.Sum/72) %>% glimpse
+```
+*The data contains zeros as well as a wide range of data which could make it difficult to plot and interpret. The correlation between Wake.Percentage and Sleep.Percentage is very low but this is probably because there was more time that the participants did not use the Movisense than the time they were using it. Given that, as expected, the correlation between Wake.Percentage and Sleep.Percentage with Not.Worn.Percentage is high. As expected, the mean and standard deviation are most similar when the data is grouped by participants than by day which were most likely at different days of the week. This gives space for confounding variables in mom's ability to respond to baby and the amount of time they have to interact with baby.*
+
+##### Visualizing
+```{R}
+df <- alldata %>% na.omit %>% select_if(is.numeric) %>% cor%>% as.data.frame%>% rownames_to_column%>% pivot_longer(-1,names_to="Names",values_to="Correlation")
+
+df %>% ggplot(aes(rowname,Names,fill=Correlation)) + geom_tile() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + coord_fixed() + labs(title = "Correlation of All Variables")
+```
+*Based on this heatmap, there is not a lot of strong correlations as most of the shades are in the medium range near zero and not in the polar ends of one. However, there is a strong correlation between hrvlsValid.Sum and Hr.1.min as well as with Not.Worn.Percentage which makes sense since when the sensor was not being used, participants were asked to place the sensor in a box they were given so the data was most similar then as opposed to when infants did have the sensor on them.*
+
+```{R}
+newdata <- alldata %>% mutate(Day = as.character(Day))
+
+ggplot(newdata, aes(Participant, Acceleration.Sum, fill = Day))+  geom_bar(stat="summary", fun.y="mean") + labs(title = "Acceleration Sum of Each Participant per Day")
+```
+*The Acceleration.Sum is a measure of the infant's movements. This looked different across all participants, event among those that recorded the same amount of days such as P12 and P13. Interestingly, even though P15 recorded over the span of 9 days, it just had an Acceleration.Sum mean a little over that of P12. Perhaps this indicates that data over larger sets of days is needed to get a more accurate picture of what motion looks like thoughout a week.*
+
+```{R}
+ggplot(newdata, aes(Wake.Percentage, Sleep.Percentage, color=Participant))+geom_point(size=2) + labs(title= "Relationship Between Sleep and Wake Percentage")
+```
+*As expected, the relationship between sleep and wake percentage has a negative correlation meaning that as an infant has a higher wake percentage then that means that they have less of the sleep percantage because an infant cannot be both sleeping and be awake at the same time. However, there is a straight line where even though wake percentage increases, sleep percentage does not change. This is likely due to the not=worn percentage.*
+
+##### Dimensionality Reduction
+```{R}
+library(cluster)
+view <- alldata %>% select(-Participant, -Hr.1.min., -Absolute.Time) %>% mutate_all(as.numeric) %>% cor %>% glimpse
+
+pdata <- alldata %>% select(-Hr.1.min., - Participant, - Absolute.Time) %>% mutate_all(function(x)log(x + 2))
+mypca <- prcomp(pdata, center = TRUE,scale. = TRUE)
+summary(mypca)
+str(mypca)
+
+eigval<-mypca$sdev^2
+varprop=round(eigval/sum(eigval), 2)
+ggplot() + geom_bar(aes(y=varprop, x=1:9), stat="identity") + xlab("") + geom_path(aes(y=varprop, x=1:9)) + geom_text(aes(x=1:9, y=varprop, label=round(varprop, 2)), vjust=1, col="white", size=4) + scale_y_continuous(breaks=seq(0, .6, .2), labels = scales::percent) + scale_x_continuous(breaks=1:9)
+
+results <-  alldata %>% select(-Hr.1.min., - Absolute.Time) %>% as.data.frame %>%
+  mutate(PC1=mypca$x[, 1], PC2=mypca$x[, 2], 
+         PC3=mypca$x[, 3], PC4=mypca$x[, 4], PC5=mypca$x[, 5])
+
+results %>% ggplot(aes(PC1, PC2, color=Participant)) + geom_point(size=4) + labs(title = "PCA1 and PCA2 of 'alldata'")
+
+results %>% ggplot(aes(PC2, PC3, color=Participant)) + geom_point(size=4) + labs(title = "PCA2 and PCA3 of 'alldata'")
+
+results %>% ggplot(aes(PC4, PC5, color=Participant)) + geom_point(size=4) + labs(title = "PCA4 and PCA5 of 'alldata'")
+```
+*According to the scree plot and going with the rule of thumb to pick PCs until cumulative proportion of variance is greater than 80%,  5 PCs should be retained which account for 87% of the data. This PCA shows very spread out data where the majority of PC1 is mostly influenced by P18 and where PC2 is mostly influences by P13. The PC1 value shows that all componentsd have a similar sign and magnitude which is true since a lot of data are duplicated. PC2 is the correlation between HrvIsValid and Not.Worn.Percentage meaning that the more the sensor was not worn, the more valid hours were calculated since there was only one possible value and we knew that the value meant it was not being worn. However, as the Not.Worn.Percentage increased, the data got more and more noise and the amount of valid/usable hours decreased. PC3 is the correlation between Wake.Percentage and HrvIsValid, which is close to the value of PC2 which means that the data is similarly reliable. However, it was a positive rather than a negative correlation which is good since data when infant is awake is desired. As infant spends more time awake, the number of valid hours also increases. PC4 means that the higher the Acceleration.Sum, the higher the Acceleration variance. PC5 means that the higher the sleep percentage, the more valid hours there is though it has a significantly weaker correlation than that between wake percentage and valid hours. The data was transformed with log so as to minimize the inflation by zeros. As expected, the data is still quite messy since the infants all had similar data with very small and very big numbers which makes it incredibly difficult to cluser. Another categorical variable would have given more insight such as the infant's age which could have eliminated some of the confouding variables such as how much time an infant spends asleep or awake as well as the range of motion.*
+
+---

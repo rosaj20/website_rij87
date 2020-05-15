@@ -1,0 +1,223 @@
+---
+title: "Project 2"
+author: "Rosa Juan (rij87)"
+date: "2020-05-01"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F, tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+##### Introduction
+```{R}
+library(tidyverse)
+library(sandwich)
+library(lmtest)
+library(plotROC)
+library(glmnet)
+
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+getwd()
+data <- read.csv(file = "ModifiedData.csv")
+glimpse(data)
+```
+*Education changes the potential knowledge a parent can have in raising a child. This can influence infant distress and development (Fouts et al, 2012). This data was obtained from the Daily Activity Lab (DAL) research project at UT Austin. Demographic and LENA outputs from 86 participants were gathered to study mother-infant interactions. The LENA recording device picks up language and distress variables which can be used to compare against demographic information. The demographic information collected includes: Age.months of the baby, Family.Status (1 = married; 2 = separated; 3 =  divorced; 4 = single parent; 5 = living with a partner without marriage), Family.Annual.Income (1 = under $25K; 2 = $25,000 - $49,999; 3 = $50,000 - $74,999; 4 = $75,000 - $99,999; 5 = $100K - $124,999; 6 = $125K and above), Education (1 = less than 8th grade; 2 = some high school; 3 = high school diploma/GED; 4 = some college; 5 = college degree; 6 = some graduate school; 7 = graduate school degree; 8 = other), language (1 = English, 2 = Spanish, 8 = Other), and Baby.Gender (1 = Female; 2 = Male). The LENA outputs collected included: cryfreq (number of instances in a day); crydur (hours per day); AWC.Normlalized (Adult Word Count (AWC): the estimated amount of adult words spoken per day); CT.Normalized (Conversational turns (CT): the estimated adult-child interactions per day). This data is just one parameter that the DAL research center is trying to incorporate into a fitbit program or other related device that will tell mothers, relatively to other babies, how their baby is developing.*
+
+##### MANOVA
+```{R}
+data1 <- data %>% filter(Family.Status != 3) %>% mutate(Family.Status = ifelse(as.character(Family.Status) == "1", "Married", ifelse(as.character(Family.Status) == "4", "Single Parent", "Living Without Marriage")))
+
+data1 %>% na.omit %>% ggplot(aes(x = AWC.Normalized, y = CT.Normalized)) +  geom_point(alpha = .5) + geom_density_2d(h=2) + coord_fixed() + facet_wrap(~Family.Status)
+
+FamMan <- manova(cbind(AWC.Normalized, CT.Normalized, cryfreq, crydur)~Family.Status, data = data1)
+summary(FamMan)
+#not significant, so this is just for practice
+summary.aov(FamMan)
+data1 %>% group_by(Family.Status) %>% summarize(mean(AWC.Normalized, na.rm = T), mean(CT.Normalized, na.rm = T), mean(cryfreq, na.rm = T), mean(crydur, na.rm = T)) %>% na.omit
+pairwise.t.test(data1$crydur, data1$Family.Status, p.adj="none")
+```
+*MANOVA tests were run of various demographic variables against the LENA outputs, but there was no significant p-value which means that for each response variable, the means of the groups are equal. Unfortunately, the assumptions are not likely to have been met as we do have independent observations but not random samples since the data was gathered mainly from one area. Multivariate normality of DVs is also not met as not even each group has 25 or more observations. Homogeneity, linear relationships, and multicolinearity assumptions are also most likely not met. Even though there was no significant difference in means, an ANOVA and post-hoc tests were performed for practice. However, since 6 total tests were done, the new alpha value was 0.0083 and there were no significant differences in means for cry duration based on family status.*
+
+##### Randomization Test
+```{R}
+data2 <- data %>% mutate(Baby.Gender = ifelse(as.character(Baby.Gender) == "1", "Female","Male")) %>% na.omit
+data2 %>% group_by(Baby.Gender) %>% summarize(m=mean(crydur)) %>% summarize(diff(m))
+gcd_vec<-vector()
+for(i in 1:5000){
+  new<-data.frame(CryDur=sample(data2$crydur), Gender=data2$Baby.Gender) 
+  gcd_vec[i]<-mean(new[new$Gender=="Male",]$CryDur)-              
+    mean(new[new$Gender=="Female",]$CryDur)}
+mean(gcd_vec>0.7436 | gcd_vec< -0.7436)
+{hist(gcd_vec,main="Mean Cry Duration in Males vs Females",ylab="Mean Hours"); abline(v = 0.7436,col="red")}
+```
+*The null hypothesis is that the mean cry duration is the same for males and females in this sample.The alternative hypothesis is that the mean cry duration is different for males versus females. After performing the test, we compute the two-tailed p-value which is 0.0248. Since the p-value is less than 0.05, we reject the null hypothesis and there is a difference for males versus females in the mean cry duration. This is also visualized in the histogram. The mean cry duration for males is higher than the mean cry duration for females.*
+
+##### Linear Regression Model
+```{R}
+data3 <- data2 %>% mutate(Age.M_c = data2$Age.months-mean(data2$Age.months)) %>% mutate(AWC_c = data2$AWC.Normalized-mean(data2$AWC.Normalized)) %>% mutate(Education = ifelse(as.character(Education) == "1" | as.character(Education) =="2"| as.character(Education) == "3"| as.character(Education) == "4", "Low", "High"))
+fit <- lm(AWC_c ~ Age.M_c*Baby.Gender*Education, data = data3)
+summary(fit)
+```
+*For a female infant with the mean age whose caregiver has a high level of education, the predicted AWC is 7.233 words. Controlling for education and gender, for every one unit of increase in infant age, the AWC goes up by 25.895 words. For infants with average age and controlling for education, males have a predicted AWC that is 9.129 higher than females. For female infants with average age, caregivers with low education levels have a predicted AWC that is 63.032 words lower than caregivers with high education levels. Controlling for education, the slope for age on AWC is 23.754 lower for males compared to females. Controlling for gender, the slope for age on AWC is 14.988 lower for low compared to high education levels. Controlling for age, 13.427 AWC is accounted by the interaction between male infants of caregivers with low education levels. About 15.447 AWC is accounted for by the interaction between male infants of average age with caregivers of low education status.*
+
+```{R}
+#regression plot
+ggplot(data3, aes(x=Age.M_c, y = AWC_c, group=Education)) + geom_point(aes(color=Education)) + geom_smooth(method = "lm", se=F, fullrange=T, aes(color=Education)) + theme(legend.position=c(.9,.7))+xlab("Mean Centered Age (months)")
+
+#linearity and normality for Age vs AWC
+dat<-data.frame(x=data3$Age.M_c, y=data3$AWC_c)
+breaks <- seq(min(dat$x), max(dat$x), len=8)
+ggplot(dat, aes(x, y)) + geom_point(alpha=.3) + theme_bw()+ geom_vline(xintercept=breaks, lty=2,color='gray50')
+resids<-lm(y~x, data=dat)$residuals
+ggplot()+geom_histogram(aes(resids),bins=10)
+
+#linearity and normality for Gender vs AWC
+dat<-data.frame(x=data3$Baby.Gender, y=data3$AWC_c)
+ggplot(dat, aes(x, y)) + geom_point(alpha=.3) + theme_bw()+ geom_vline(xintercept=breaks, lty=2,color='gray50')
+resids<-lm(y~x, data=dat)$residuals
+ggplot()+geom_histogram(aes(resids),bins=10)
+
+#linearity and normality for Education vs AWC
+dat<-data.frame(x=data3$Education, y=data3$AWC_c)
+ggplot(dat, aes(x, y)) + geom_point(alpha=.3) + theme_bw()+ geom_vline(xintercept=breaks, lty=2,color='gray50')
+resids<-lm(y~x, data=dat)$residuals
+ggplot()+geom_histogram(aes(resids),bins=10)
+
+#homoskedasticity
+resids<-fit$residuals
+fitvals<-fit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color='red')
+
+summary(fit)$coef
+coeftest(fit,vcov=vcovHC(fit))
+```
+*The assumptions of linearity, normality, and homoskedasticity for this data are not met as shown by the plots. From the linear regression model, the only significant coefficient is the one for the average age. However, after the standard errors are corrected, no coefficients are significant. Additionally, the uncorrected SE for all variables and interactions are lower than the corrected SE. R^2 says that 15.6% of variability in AWC is explained by the model. However, the adjusted R^2 says that 0% of variation in AWC is explained by the model which means that the variation previously seen was due to chance.*
+
+##### Bootstrapped SEs
+```{R}
+samp_boot<-replicate(5000, {  
+  boot_dat<-sample_frac(data3,replace=T)
+  fit<-lm(AWC_c ~ Age.M_c*Baby.Gender*Education, data=boot_dat)  
+  coef(fit)
+})
+samp_boot%>%t%>%as.data.frame%>% na.omit%>%summarize_all(sd)
+```
+*The bootstrapped SEs are higher than the original SEs and the robust SEs for all variables and interactions. Since there is greater error, this most likely indicates that the data violates multiple assumptions and the p-values are not significant.*
+
+##### Logistic Regression
+```{R}
+data5 <- data3 %>% mutate(Caregiver.Race.Ethnicity = ifelse(as.character(Caregiver.Race.Ethnicity) == "4", "White","Non-White")) %>% mutate(Education = ifelse(Education == "Low", 1, 0))
+data5$C.Age_c <- data5$Caregiver.Age - mean(data5$Caregiver.Age)
+fit2 <- glm(Education ~ Family.Annual.Income + Caregiver.Race.Ethnicity + C.Age_c, data = data5, family = "binomial")
+coeftest(fit2)
+```
+*For a non-White caregiver of average age with zero family annual income, the log-odds is 2.187. For non-White caregivers and holding caregiver age constant, going up $1 in family annual income decreases log-odds by -0.871. Holding family annual income and caregiver age constant, being White decreases the log-odds by 0.670 as compared to being non-White. For non-White caregivers and holding family annual income constant, increasing 1 year of caregiver age decreases log-odds by 0.199. The only significant p-value is for family annual income which tells us that education significantly differs based on income. *
+
+```{R}
+#confusion matrix
+prob<-predict(fit2,type="response")
+pred<-ifelse(prob>.5,1,0)
+table(prediction=pred, truth=data5$Education) %>% addmargins
+(30+9)/46 #Accuracy
+9/13 #TPR
+30/33 #TNR
+9/12 #PPV
+```
+*This regression model has 84.8% accuracy of predicting low versus high education of a caregiver based on family annual income, caregiver age, and caregiver race. The probability of predicting a caregiver has a low education level, the sensitivity, is 69.2%. The probability of predicting a high level education, the specificity, is 90.9%. The percentage of caregivers who are classified as having a low education level and do have a low education level is 75.0%.*
+
+```{R}
+#density of log-odds
+data5$logit<-predict(fit2,type="link")
+data5$Education <- as.factor(data5$Education)
+data5 %>% ggplot(aes(logit, color = Education, fill = Education)) + geom_density(alpha = 0.4) + theme(legend.position = c(0.1, 0.85)) + geom_vline(xintercept = 0) +
+xlab("predictor(logit)") + geom_rug(aes(logit, color = Education))
+
+#ROC & AUC
+data5 <- data5 %>% mutate(Education = ifelse(Education == 0, "High", "Low"))
+ROCplot <- ggplot(data5) + geom_roc(aes(d = Education, m = prob), n.cuts = 0)
+ROCplot
+calc_auc(ROCplot)
+```
+*The probability that a randomly selected caregiver with a low education level has a higher predicted probability than a randomly selected person with a high education level, the AUC, is 89.3%, which is good but not the best.*
+
+```{R}
+#repeated random sub-sampling CV
+data5 <- data5 %>% mutate(Education = ifelse(as.factor(Education) == "Low", 1, 0))
+fraction<-0.5
+train_n<-floor(fraction*nrow(data5))
+iter<-500
+diags<-NULL
+for(i in 1:iter){
+  train_index<-sample(1:nrow(data5),size=train_n)  
+  train<-data5[train_index,]   
+  test<-data5[-train_index,]  
+  truth<-test$Education
+  fit<-glm(Education~Family.Annual.Income+Caregiver.Race.Ethnicity+C.Age_c,data=train,family="binomial")
+  probs<-predict(fit,newdata = test,type="response")  
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+diags <- diags %>% na.omit
+summarize_all(diags,mean)
+```
+*The average out-of-sample accuracy, sensitivity, and recall is 0.78, 0.60, and 0.65, respectively.*
+
+##### LASSO Regression
+```{R}
+y<-as.matrix(data5$crydur)
+data6<-data5%>%select(-Participant, -Duration_Secs.sum, -AWC_COUNT.sum, -AWC_c, -CT_COUNT.sum, -Age.M_c, -C.Age_c, -logit)
+x<-model.matrix(crydur~.,data=data6)
+#head(x)
+cv<-cv.glmnet(x,y)
+lasso<-glmnet(x,y,lambda=cv$lambda.1se)
+coef(lasso)
+```
+*The LASSO regression says that education and cry frequency are the most important predictors of cry duration.*
+
+```{R}
+#10-fold CV
+k=10
+dat1<-data6[sample(nrow(data6)),]
+folds<-cut(seq(1:nrow(data6)),breaks=k,labels=F)
+diags<-NULL
+for(i in 1:k){
+  train<-dat1[folds!=i,]   
+  test<-dat1[folds==i,]  
+  truth<-test$crydur
+  fit<-glm(crydur~Education+cryfreq,data=train)  
+  probs<-predict(fit,newdata = test,type="response")
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+diags%>%summarize_all(mean)
+fit4<-lm(crydur~Education+cryfreq, data = data6)
+summary(fit4)
+fit5<-lm(crydur~.,data=data6)
+summary(fit5)
+```
+*The residual standard error for the model using LASSO coefficients is 0.6898 which is slightly higher than the residual standard error for a model using all coefficients which is 0.6395. This means that the model using all coefficients has a slight better fit than the model using LASSO coefficients. This is an unusual answer, but the results from the 10-fold CV are also unusual. This is most likely due to the non-normal distribution of the data into the train and test sets. Furthermore, many of the coefficients did not have enough data for all categorical levels.*

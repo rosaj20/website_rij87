@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SDS 348 Porfolio Website</title>
+    <link>/</link>
+    <description>Recent content on SDS 348 Porfolio Website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 01 May 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>My First Blog</title>
+      <link>/blog/my-new-post/</link>
+      <pubDate>Fri, 15 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/my-new-post/</guid>
+      <description> #python code chunk fruit_prices = { &amp;#39;apple&amp;#39;: 0.65, &amp;#39;mango&amp;#39;: 1.50, &amp;#39;strawberry&amp;#39;: &amp;#39;$3/lb&amp;#39;, &amp;#39;musk melon&amp;#39;: &amp;#39;unavailable&amp;#39; } fruit_prices[&amp;#39;mango&amp;#39;] ## 1.5 #R code chunk library(reticulate) py$fruit_prices ## $apple ## [1] 0.65 ## ## $mango ## [1] 1.5 ## ## $strawberry ## [1] &amp;quot;$3/lb&amp;quot; ## ## $`musk melon` ## [1] &amp;quot;unavailable&amp;quot; x &amp;lt;- &amp;quot;dog&amp;quot; #another python code chunk r.x.capitalize().swapcase()*100 ## &amp;#39;dOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOGdOG&amp;#39; </description>
+    </item>
+    
+    <item>
+      <title>Project 2</title>
+      <link>/project2/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/project2/</guid>
+      <description>Introduction library(tidyverse) library(sandwich) library(lmtest) library(plotROC) library(glmnet) class_diag &amp;lt;- function(probs, truth) { tab &amp;lt;- table(factor(probs &amp;gt; 0.5, levels = c(&amp;quot;FALSE&amp;quot;, &amp;quot;TRUE&amp;quot;)), truth) acc = sum(diag(tab))/sum(tab) sens = tab[2, 2]/colSums(tab)[2] spec = tab[1, 1]/colSums(tab)[1] ppv = tab[2, 2]/rowSums(tab)[2] if (is.numeric(truth) == FALSE &amp;amp; is.logical(truth) == FALSE) truth &amp;lt;- as.numeric(truth) - 1 ord &amp;lt;- order(probs, decreasing = TRUE) probs &amp;lt;- probs[ord] truth &amp;lt;- truth[ord] TPR = cumsum(truth)/max(1, sum(truth)) FPR = cumsum(!truth)/max(1, sum(!truth)) dup &amp;lt;- c(probs[-1] &amp;gt;= probs[-length(probs)], FALSE) TPR &amp;lt;- c(0, TPR[!</description>
+    </item>
+    
+    <item>
+      <title>Project 1</title>
+      <link>/project1/</link>
+      <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/project1/</guid>
+      <description>Introduction library(tidyverse) library(dbplyr) library(ggplot2) getwd() ## [1] &amp;quot;/Users/Rosa/Website/content&amp;quot; use &amp;lt;- read.csv(file = &amp;quot;MotionUsage_P12-18.csv&amp;quot;) acc &amp;lt;- read.csv(file = &amp;quot;MotionAcceleration_P12-18.csv&amp;quot;) glimpse(use) ## Observations: 1,112 ## Variables: 8 ## $ Participant &amp;lt;fct&amp;gt; P12, P12, P12, P12, P12, P12, P12, P12, P12, P12,… ## $ Day &amp;lt;int&amp;gt; 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2… ## $ Hour.Count &amp;lt;int&amp;gt; 17, 18, 19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5, 6,… ## $ Wake.</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>/projects/</link>
+      <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
+      
+      <guid>/projects/</guid>
+      <description>Projects  Link to Project 1 Link to Project 2  </description>
+    </item>
+    
+  </channel>
+</rss>
